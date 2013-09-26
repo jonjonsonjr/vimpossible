@@ -29,7 +29,7 @@ var player = {
   },
   blink: function () {
     this.clear();
-    this.color = (this.color == 'black') ? 'lightgrey' : 'black';
+    this.color = (this.color == 'black') ? 'white' : 'black';
     this.draw();
   },
   moveUp: function () {
