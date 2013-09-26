@@ -21,7 +21,7 @@ var player = {
     context.clearRect(this.x * this.width, this.y * this.height, this.width, this.height);
   },
   draw: function () {
-    checkCollision(this, enemies);
+    checkCollision();
     context.beginPath();
     context.rect(this.x * this.width, this.y * this.height, this.width, this.height);
     context.fillStyle = this.color;
