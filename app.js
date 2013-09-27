@@ -28,8 +28,8 @@ var nugget = {
   },
   move: function () {
     this.clear();
-    this.x = Math.floor(Math.random() * maxWidth),
-    this.y = Math.floor(Math.random() * maxHeight),
+    this.x = Math.floor(Math.random() * maxWidth);
+    this.y = Math.floor(Math.random() * maxHeight);
     this.draw();
   }
 };
