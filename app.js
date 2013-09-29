@@ -83,18 +83,6 @@ var player = {
 };
 player.draw();
 
-window.addEventListener('keydown', function (e) {
-  if (e.keyCode == 72) { // h
-    player.moveLeft();
-  } else if (e.keyCode == 74) { // j
-    player.moveDown();
-  } else if (e.keyCode == 75) { // k
-    player.moveUp();
-  } else if (e.keyCode == 76) { // l
-    player.moveRight();
-  }
-}, true);
-
 window.setInterval(function () {
   var enemy = {
     x: Math.floor(Math.random() * maxWidth),
@@ -171,6 +159,18 @@ window.setInterval(function () {
   scoreSpan.innerHTML = score;
   highScoreSpan.innerHTML = highScore;
 }, 500);
+
+window.addEventListener('keydown', function (e) {
+  if (e.keyCode == 72) { // h
+    player.moveLeft();
+  } else if (e.keyCode == 74) { // j
+    player.moveDown();
+  } else if (e.keyCode == 75) { // k
+    player.moveUp();
+  } else if (e.keyCode == 76) { // l
+    player.moveRight();
+  }
+}, true);
 
 function checkCollision() {
   if (nugget.x == player.x && nugget.y == player.y) {
