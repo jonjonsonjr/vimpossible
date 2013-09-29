@@ -12,8 +12,8 @@ var score = 0;
 var highScore = 0;
 
 var nugget = {
-  x: 0,
-  y: 0,
+  x: Math.floor(Math.random() * maxWidth),
+  y: Math.floor(Math.random() * maxHeight),
   width: width,
   height: height,
   color: 'yellow',
@@ -33,7 +33,6 @@ var nugget = {
     this.draw();
   }
 };
-nugget.move();
 
 var player = {
   x: maxWidth / 2,
@@ -50,12 +49,7 @@ var player = {
     context.rect(this.x * this.width, this.y * this.height, this.width, this.height);
     context.fillStyle = this.color;
     context.fill();
-
-    var paddedText = String('    ' + ((this.y + 1) + ',' + (this.x + 1)));
-    paddedText = paddedText.slice(-5);
-    context.clearRect(0, maxHeight * height, canvas.width, height);
-    context.font = '18px Monospace';
-    context.fillText(paddedText, canvas.width - 60, canvas.height - 5);
+    drawPosition(this.x, this.y);
   },
   blink: function () {
     this.clear();
@@ -87,7 +81,8 @@ var player = {
     this.draw();
   }
 };
-player.draw();
+
+reset();
 
 window.setInterval(function () {
   var enemy = {
@@ -178,6 +173,18 @@ window.addEventListener('keydown', function (e) {
   }
 }, true);
 
+function reset() {
+  score = 0;
+  enemies = [];
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  player.draw();
+  nugget.move();
+
+  context.fillStyle = 'white';
+  context.font = '18px Monospace';
+  context.fillText('http://jonjonsonjr.github.io/vimpossible', 5, canvas.height - 5);
+}
+
 function checkCollision() {
   if (nugget.x == player.x && nugget.y == player.y) {
     score += 500;
@@ -189,11 +196,18 @@ function checkCollision() {
     var e = enemies[i];
 
     if (e.x == player.x && e.y == player.y) {
-      score = 0;
-      enemies = [];
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      player.draw();
+      reset();
       break;
     }
   }
+}
+
+function drawPosition(x, y) {
+  var paddedText = String('    ' + ((y + 1) + ',' + (x + 1)));
+  paddedText = paddedText.slice(-5);
+
+  context.clearRect(canvas.width - 60, maxHeight * height, 60, height);
+  context.font = '18px Monospace';
+  context.fillStyle = 'white';
+  context.fillText(paddedText, canvas.width - 60, canvas.height - 5);
 }
