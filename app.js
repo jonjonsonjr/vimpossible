@@ -4,7 +4,7 @@ var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var height = 20;
 var width = 10;
-var maxHeight = canvas.height / height;
+var maxHeight = canvas.height / height - 1;
 var maxWidth = canvas.width / width;
 
 var enemies = [];
@@ -37,7 +37,7 @@ nugget.move();
 
 var player = {
   x: maxWidth / 2,
-  y: maxHeight / 2,
+  y: (maxHeight + 1) / 2,
   width: width,
   height: height,
   color: 'white',
@@ -50,6 +50,12 @@ var player = {
     context.rect(this.x * this.width, this.y * this.height, this.width, this.height);
     context.fillStyle = this.color;
     context.fill();
+
+    var paddedText = String('    ' + ((this.y + 1) + ',' + (this.x + 1)));
+    paddedText = paddedText.slice(-5);
+    context.clearRect(0, maxHeight * height, canvas.width, height);
+    context.font = '18px Monospace';
+    context.fillText(paddedText, canvas.width - 60, canvas.height - 5);
   },
   blink: function () {
     this.clear();
