@@ -1,11 +1,13 @@
+var url = 'http://jonjonsonjr.github.io/vimpossible';
 var highScoreSpan = document.getElementById('highScore');
 var scoreSpan = document.getElementById('score');
 var canvas = document.getElementById('canvas');
 var context = canvas.getContext('2d');
 var height = 20;
 var width = 10;
-var maxHeight = canvas.height / height - 1;
+var maxHeight = canvas.height / height - 1; // make room for status bar
 var maxWidth = canvas.width / width;
+var insertMode = false;
 
 var enemies = [];
 var score = 0;
@@ -57,25 +59,25 @@ var player = {
     this.draw();
   },
   moveUp: function () {
-    if (this.y - 1 < 0) return;
+    if (this.y - 1 < 0) return false;
     this.clear();
     this.y -= 1;
     this.draw();
   },
   moveDown: function () {
-    if (this.y + 1 >= maxHeight) return;
+    if (this.y + 1 >= maxHeight) return false;
     this.clear();
     this.y += 1;
     this.draw();
   },
   moveLeft: function () {
-    if (this.x - 1 < 0) return;
+    if (this.x - 1 < 0) return false;
     this.clear();
     this.x -= 1;
     this.draw();
   },
   moveRight: function () {
-    if (this.x + 1 >= maxWidth) return;
+    if (this.x + 1 >= maxWidth) return false;
     this.clear();
     this.x += 1;
     this.draw();
@@ -161,8 +163,38 @@ window.setInterval(function () {
   highScoreSpan.innerHTML = highScore;
 }, 500);
 
+document.onkeydown = function (e) {
+  if (e.which == 8) {
+    e.preventDefault(); // swallow backspace
+  }
+};
+
 window.addEventListener('keydown', function (e) {
-  if (e.keyCode == 72) { // h
+  if (insertMode) {
+    if (e.keyCode == 27) {
+      insertMode = false;
+      drawText(url);
+    } else if (e.keyCode == 8) {
+      player.moveLeft();
+    } else {
+      var ch = String.fromCharCode(e.keyCode);
+      var cc = ch.charCodeAt(0);
+      var stuck = player.moveRight();
+
+      if (cc > 64 && cc < 91) {
+        ch = ch.toLowerCase();
+      }
+
+      if (stuck !== false) {
+        context.fillStyle = 'white';
+        context.fillText(ch, (player.x - 1) * width, player.y * height + 15);
+      }
+    }
+
+  } else if (e.keyCode == 73 && !insertMode) {
+    insertMode = true;
+    drawText('INSERT');
+  } else if (e.keyCode == 72) { // h
     player.moveLeft();
   } else if (e.keyCode == 74) { // j
     player.moveDown();
@@ -170,6 +202,8 @@ window.addEventListener('keydown', function (e) {
     player.moveUp();
   } else if (e.keyCode == 76) { // l
     player.moveRight();
+  } else {
+    return false;
   }
 }, true);
 
@@ -179,10 +213,7 @@ function reset() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
   nugget.move();
-
-  context.fillStyle = 'white';
-  context.font = '18px Monospace';
-  context.fillText('http://jonjonsonjr.github.io/vimpossible', 5, canvas.height - 5);
+  drawText(url);
 }
 
 function checkCollision() {
@@ -210,4 +241,11 @@ function drawPosition(x, y) {
   context.font = '18px Monospace';
   context.fillStyle = 'white';
   context.fillText(paddedText, canvas.width - 60, canvas.height - 5);
+}
+
+function drawText(text) {
+  context.clearRect(0, maxHeight * height, canvas.width - 60, height);
+  context.fillStyle = 'white';
+  context.font = '18px Monospace';
+  context.fillText(text, 5, canvas.height - 5);
 }
