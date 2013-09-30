@@ -110,7 +110,7 @@ window.setInterval(function () {
   };
   enemies.push(enemy);
   enemy.draw();
-}, 200);
+}, 300);
 
 window.setInterval(function () {
   var enemy = {
@@ -136,7 +136,7 @@ window.setInterval(function () {
   };
   enemies.push(enemy);
   enemy.draw();
-}, 300);
+}, 500);
 
 window.setInterval(function () {
   enemies.forEach(function (enemy) {
@@ -154,6 +154,7 @@ window.setInterval(function () {
       enemies.splice(i, 1);
       score++;
       highScore = Math.max(score, highScore);
+      i--; // since we deleted this one, the next one with now be at this index, repeat 'i'
     }
   }
 
