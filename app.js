@@ -171,17 +171,17 @@ document.onkeydown = function (e) {
 
 window.addEventListener('keydown', function (e) {
   if (insertMode) {
-    if (e.keyCode == 27) {
+    if (e.keyCode == 27) { // esc
       insertMode = false;
       drawText(url);
-    } else if (e.keyCode == 8) {
+    } else if (e.keyCode == 8) { // backspace
       player.moveLeft();
     } else {
       var ch = String.fromCharCode(e.keyCode);
       var cc = ch.charCodeAt(0);
       var stuck = player.moveRight();
 
-      if (cc > 64 && cc < 91) {
+      if (cc > 64 && cc < 91) { // A-Z
         ch = ch.toLowerCase();
       }
 
@@ -190,8 +190,7 @@ window.addEventListener('keydown', function (e) {
         context.fillText(ch, (player.x - 1) * width, player.y * height + 15);
       }
     }
-
-  } else if (e.keyCode == 73 && !insertMode) {
+  } else if (e.keyCode == 73) { // i
     insertMode = true;
     drawText('INSERT');
   } else if (e.keyCode == 72) { // h
