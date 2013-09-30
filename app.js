@@ -110,7 +110,7 @@ window.setInterval(function () {
   };
   enemies.push(enemy);
   enemy.draw();
-}, 100);
+}, 200);
 
 window.setInterval(function () {
   var enemy = {
@@ -136,7 +136,7 @@ window.setInterval(function () {
   };
   enemies.push(enemy);
   enemy.draw();
-}, 200);
+}, 300);
 
 window.setInterval(function () {
   enemies.forEach(function (enemy) {
