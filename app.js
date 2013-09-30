@@ -214,6 +214,7 @@ function reset() {
   player.draw();
   nugget.move();
   drawText(url);
+  insertMode = false;
 }
 
 function checkCollision() {
