@@ -171,6 +171,7 @@ document.onkeydown = function (e) {
 };
 
 window.addEventListener('keydown', function (e) {
+  console.log(String.fromCharCode(e.keyCode));
   if (insertMode) {
     if (e.keyCode == 27) { // esc
       insertMode = false;
@@ -215,6 +216,7 @@ function reset() {
   nugget.move();
   drawText(url);
   insertMode = false;
+  spawnMonster();
 }
 
 function checkCollision() {
@@ -249,4 +251,34 @@ function drawText(text) {
   context.fillStyle = 'white';
   context.font = '18px Monospace';
   context.fillText(text, 5, canvas.height - 5);
+}
+
+function spawnMonster() {
+  enemies.push({
+    x: Math.floor(Math.random() * maxWidth),
+    y: Math.floor(Math.random() * maxHeight),
+    width: width,
+    height: height,
+    color: 'orange',
+    clear: function () {
+      context.clearRect(this.x * this.width, this.y * this.height, this.width, this.height);
+    },
+    draw: function () {
+      context.beginPath();
+      context.rect(this.x * this.width, this.y * this.height, this.width, this.height);
+      context.fillStyle = this.color;
+      context.fill();
+    },
+    move: function () {
+      var dx = signum(player.x - this.x);
+      var dy = signum(player.y - this.y);
+      this.x += dx;
+      this.y += dy;
+      this.draw();
+    }
+  });
+}
+
+function signum(n) {
+  return (n > 0) - (n < 0);
 }
