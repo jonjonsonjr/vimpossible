@@ -171,7 +171,6 @@ document.onkeydown = function (e) {
 };
 
 window.addEventListener('keydown', function (e) {
-  console.log(String.fromCharCode(e.keyCode));
   if (insertMode) {
     if (e.keyCode == 27) { // esc
       insertMode = false;
