@@ -215,7 +215,7 @@ function reset() {
   nugget.move();
   drawText(url);
   insertMode = false;
-  spawnMonster();
+  setTimeout(spawnMonster, 10000);
 }
 
 function checkCollision() {
