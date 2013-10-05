@@ -10,6 +10,7 @@ var maxWidth = canvas.width / width;
 var insertMode = false;
 
 var enemies = [];
+var monsterTimeout;
 var score = 0;
 var highScore = 0;
 
@@ -215,7 +216,8 @@ function reset() {
   nugget.move();
   drawText(url);
   insertMode = false;
-  setTimeout(spawnMonster, 10000);
+  clearTimeout(monsterTimeout);
+  monsterTimeout = setTimeout(spawnMonster, 10000);
 }
 
 function checkCollision() {
