@@ -8,6 +8,9 @@ var width = 10;
 var maxHeight = canvas.height / height - 1; // make room for status bar
 var maxWidth = canvas.width / width;
 var insertMode = false;
+var shift = false;
+var numKey = 1;
+var gmod = false;
 
 var enemies = [];
 var monsterTimeout;
@@ -59,29 +62,33 @@ var player = {
     this.color = (this.color == 'white') ? 'black' : 'white';
     this.draw();
   },
-  moveUp: function () {
-    if (this.y - 1 < 0) return false;
+  moveUp: function (n) {
+    if (this.y - n < 0) return false;
     this.clear();
-    this.y -= 1;
+    this.y -= n;
     this.draw();
+    numKey = 1;
   },
-  moveDown: function () {
-    if (this.y + 1 >= maxHeight) return false;
+  moveDown: function (n) {
+    if (this.y + n >= maxHeight) return false;
     this.clear();
-    this.y += 1;
+    this.y += n;
     this.draw();
+    numKey = 1;
   },
-  moveLeft: function () {
-    if (this.x - 1 < 0) return false;
+  moveLeft: function (n) {
+    if (this.x - n < 0) return false;
     this.clear();
-    this.x -= 1;
+    this.x -= n;
     this.draw();
+    numKey = 1;
   },
-  moveRight: function () {
-    if (this.x + 1 >= maxWidth) return false;
+  moveRight: function (n) {
+    if (this.x + n >= maxWidth) return false;
     this.clear();
-    this.x += 1;
+    this.x += n;
     this.draw();
+    numKey = 1;
   }
 };
 
@@ -172,6 +179,10 @@ document.onkeydown = function (e) {
 };
 
 window.addEventListener('keydown', function (e) {
+  if (e.keyCode == 16) { // shift
+    shift = true;
+    return;
+  }
   if (insertMode) {
     if (e.keyCode == 27) { // esc
       insertMode = false;
@@ -192,21 +203,81 @@ window.addEventListener('keydown', function (e) {
         context.fillText(ch, (player.x - 1) * width, player.y * height + 15);
       }
     }
+  } else if (shift) {
+    if (e.keyCode == 52) { // $
+      player.clear();
+      player.x = maxWidth - 1;
+      player.draw();
+    } else if (e.keyCode == 71) { // G
+      player.clear();
+      player.y = maxHeight - 1;
+      player.draw();
+    } else if (e.keyCode == 72) { // H
+      player.clear();
+      player.y = 0;
+      player.draw();
+    } else if (e.keyCode == 77) { // M
+      player.clear();
+      player.y = Math.floor(maxHeight / 2);
+      player.draw();
+    } else if (e.keyCode == 76) { // L
+      player.clear();
+      player.y = maxHeight - 1;
+      player.draw();
+    }
+  } else if (e.keyCode == 48) { // 0
+    player.clear();
+    player.x = 0;
+    player.draw();
   } else if (e.keyCode == 73) { // i
     insertMode = true;
     drawText('INSERT');
   } else if (e.keyCode == 72) { // h
-    player.moveLeft();
+    player.moveLeft(numKey);
   } else if (e.keyCode == 74) { // j
-    player.moveDown();
+    player.moveDown(numKey);
   } else if (e.keyCode == 75) { // k
-    player.moveUp();
+    player.moveUp(numKey);
   } else if (e.keyCode == 76) { // l
-    player.moveRight();
+    player.moveRight(numKey);
+  } else if (e.keyCode > 48 && e.keyCode <= 57) { // 1-9
+    numKey = e.keyCode - 48;
+  } else if (e.keyCode == 87) { // w
+    var original = player.x;
+    player.clear();
+    while (!checkCollision() && player.x < maxWidth) {
+      player.x += 1;
+    }
+    player.x = (player.x == maxWidth) ? original : player.x;
+    player.draw();
+  } else if (e.keyCode == 66) { // b
+    var original = player.x;
+    player.clear();
+    while (!checkCollision() && player.x >= 0) {
+      player.x -= 1;
+    }
+    player.x = (player.x == -1) ? original : player.x;
+    player.draw();
+  } else if (e.keyCode == 71) { // g
+    if (gmod) {
+      player.clear();
+      player.y = 0;
+      player.draw();
+      gmod = false;
+    } else {
+      gmod = true;
+    }
   } else {
+    gmod = false;
     return false;
   }
 }, true);
+
+window.addEventListener('keyup', function (e) {
+  if (e.keyCode == 16) {
+    shift = false;
+  }
+});
 
 function reset() {
   score = 0;
@@ -221,10 +292,13 @@ function reset() {
 }
 
 function checkCollision() {
+  var gotNugget = false;
+
   if (nugget.x == player.x && nugget.y == player.y) {
     score += 500;
     highScore = Math.max(score, highScore);
     nugget.move();
+    gotNugget = true;
   }
 
   for (var i = 0; i < enemies.length; i++) {
@@ -232,9 +306,11 @@ function checkCollision() {
 
     if (e.x == player.x && e.y == player.y) {
       reset();
-      break;
+      return true;
     }
   }
+
+  return gotNugget;
 }
 
 function drawPosition(x, y) {
