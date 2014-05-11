@@ -48,6 +48,10 @@ var player = {
   color: 'white',
   clear: function () {
     context.clearRect(this.x * this.width, this.y * this.height, this.width, this.height);
+    context.beginPath();
+    context.rect(this.x * this.width, this.y * this.height, this.width, this.height);
+    context.fillStyle = "#111111";
+    context.fill();
   },
   draw: function () {
     checkCollision();
@@ -68,6 +72,7 @@ var player = {
     this.y -= n;
     this.draw();
     numKey = 1;
+    redraw();
   },
   moveDown: function (n) {
     if (this.y + n >= maxHeight) return false;
@@ -75,6 +80,7 @@ var player = {
     this.y += n;
     this.draw();
     numKey = 1;
+    redraw();
   },
   moveLeft: function (n) {
     if (this.x - n < 0) return false;
@@ -167,6 +173,7 @@ window.setInterval(function () {
   }
 
   checkCollision();
+  redraw();
 
   scoreSpan.innerHTML = score;
   highScoreSpan.innerHTML = highScore;
@@ -285,6 +292,7 @@ function reset() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
   nugget.move();
+  redraw();
   drawText(url);
   insertMode = false;
   clearTimeout(monsterTimeout);
@@ -311,6 +319,28 @@ function checkCollision() {
   }
 
   return gotNugget;
+}
+
+function redraw() {
+  context.beginPath();
+  context.rect(0, 0, width * maxWidth, height * maxHeight);
+  context.fillStyle = "black";
+  context.fill();
+  context.beginPath();
+  context.rect(0, player.y * height, width * maxWidth, height);
+  context.fillStyle = "#111111";
+  context.fill();
+
+  player.clear();
+  player.draw();
+
+  nugget.clear();
+  nugget.draw();
+
+  enemies.forEach(function (enemy) {
+    enemy.clear();
+    enemy.draw();
+  });
 }
 
 function drawPosition(x, y) {
